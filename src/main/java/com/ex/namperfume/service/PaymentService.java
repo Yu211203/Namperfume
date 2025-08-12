@@ -3,6 +3,8 @@ package com.ex.namperfume.service;
 import com.ex.namperfume.dto.request.PaymentRequest;
 import com.ex.namperfume.dto.response.PaymentResponse;
 import com.ex.namperfume.entity.Payment;
+import com.ex.namperfume.exception.AppException;
+import com.ex.namperfume.exception.EnumCode;
 import com.ex.namperfume.mapper.PaymentMapper;
 import com.ex.namperfume.repository.PaymentRepository;
 import lombok.AccessLevel;
@@ -29,8 +31,8 @@ public class PaymentService {
             payment = paymentRepository.save(payment);
 
         }
-        catch (RuntimeException e) {
-            throw new RuntimeException("Error...");
+        catch (AppException e) {
+            throw new AppException(EnumCode.UNCATEGORIZE_EXCEPTION);
         }
 
         return paymentMapper.toPaymentResponse(payment);
@@ -41,7 +43,7 @@ public class PaymentService {
     }
 
     public PaymentResponse getPayment(UUID payment_id){
-        Payment payment = paymentRepository.findById(payment_id).orElseThrow(()-> new RuntimeException("Not found payment with id: "+payment_id));
+        Payment payment = paymentRepository.findById(payment_id).orElseThrow(()-> new AppException(EnumCode.PAYMENT_NOT_EXIST));
         return paymentMapper.toPaymentResponse(payment);
     }
 

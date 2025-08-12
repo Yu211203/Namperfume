@@ -20,14 +20,14 @@ public class UserRequest {
     @NotBlank(message = "Last name is required")
     String lastName;
 
-    @Email(message = "Invalid email format")
+    @Email(message = "EMAIL_INVALID")
     @NotBlank(message = "Email is required")
     String email;
 
     @Pattern(regexp = "^[0-9]{10,11}$", message = "Invalid phone number")
     String phone;
 
-    @Size(min = 8, message = "Password must be greater than 8 characters")
+    @Size(min = 8, message = "PASSWORD_INVALID")
     @NotBlank(message = "Password is required")
     String password;
 

@@ -3,6 +3,8 @@ package com.ex.namperfume.service;
 import com.ex.namperfume.dto.request.BrandRequest;
 import com.ex.namperfume.dto.response.BrandResponse;
 import com.ex.namperfume.entity.Brand;
+import com.ex.namperfume.exception.AppException;
+import com.ex.namperfume.exception.EnumCode;
 import com.ex.namperfume.mapper.BrandMapper;
 import com.ex.namperfume.repository.BrandRepository;
 import lombok.AccessLevel;
@@ -36,7 +38,7 @@ public class BrandService {
 
     public BrandResponse getBrand(UUID brand_id){
         return brandRepository.findById(brand_id).map(brandMapper::toBrandResponse)
-                .orElseThrow(()-> new RuntimeException("Brand not found"));
+                .orElseThrow(()-> new AppException(EnumCode.BRAND_NOT_EXIST));
     }
 
     public List<BrandResponse> getBrands (){
@@ -48,7 +50,7 @@ public class BrandService {
     }
 
     public BrandResponse updateBrandName(UUID brand_id, String newBrandName){
-        Brand brand = brandRepository.findById(brand_id).orElseThrow(()-> new RuntimeException("Not found brand with id: "+ brand_id));
+        Brand brand = brandRepository.findById(brand_id).orElseThrow(()-> new AppException(EnumCode.BRAND_NOT_EXIST));
 
         brand.setBrand_name(newBrandName);
         Brand updateBrand = brandRepository.save(brand);

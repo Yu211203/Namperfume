@@ -3,6 +3,8 @@ package com.ex.namperfume.service;
 import com.ex.namperfume.dto.request.ProductTypeRequest;
 import com.ex.namperfume.dto.response.ProductTypeResponse;
 import com.ex.namperfume.entity.ProductType;
+import com.ex.namperfume.exception.AppException;
+import com.ex.namperfume.exception.EnumCode;
 import com.ex.namperfume.mapper.ProductTypeMapper;
 import com.ex.namperfume.repository.ProductTypeRepository;
 import lombok.AccessLevel;
@@ -26,8 +28,8 @@ public class ProductTypeService {
         ProductType type = mapper.toProductType(request);
         try {
             type = repository.save(type);
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+        } catch (AppException e) {
+            throw new AppException(EnumCode.UNCATEGORIZE_EXCEPTION);
         }
 
         return mapper.toProductTypeResponse(type);
@@ -36,7 +38,7 @@ public class ProductTypeService {
 
     public ProductTypeResponse getProductType(UUID type_id){
         return mapper.toProductTypeResponse(repository.findById(type_id).orElseThrow(
-                ()-> new RuntimeException("Not found product type")
+                ()-> new AppException(EnumCode.PRODUCT_TYPE_NOT_EXIST)
         ));
     }
 
@@ -45,11 +47,14 @@ public class ProductTypeService {
     }
 
     public void deleteProductType(UUID type_id){
+
+        if(!repository.existsById(type_id))
+            throw new AppException(EnumCode.PRODUCT_TYPE_NOT_EXIST);
         repository.deleteById(type_id);
     }
 
     public ProductTypeResponse updateTypeName(UUID type_id, String newTypeName){
-        ProductType type = repository.findById(type_id).orElseThrow(()-> new RuntimeException("Not found type with id: "+type_id));
+        ProductType type = repository.findById(type_id).orElseThrow(()-> new AppException(EnumCode.PRODUCT_TYPE_NOT_EXIST));
 
         type.setType_name(newTypeName);
         ProductType updateType = repository.save(type);

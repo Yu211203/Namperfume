@@ -3,6 +3,8 @@ package com.ex.namperfume.service;
 import com.ex.namperfume.dto.request.UserRequest;
 import com.ex.namperfume.dto.response.UserResponse;
 import com.ex.namperfume.entity.User;
+import com.ex.namperfume.exception.AppException;
+import com.ex.namperfume.exception.EnumCode;
 import com.ex.namperfume.mapper.UserMapper;
 import com.ex.namperfume.repository.UserRepository;
 import lombok.AccessLevel;
@@ -30,14 +32,14 @@ public class UserService {
         try{
             userRepository.save(user);
 
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+        } catch (AppException e) {
+            throw new AppException(EnumCode.UNCATEGORIZE_EXCEPTION);
         }
         return userMapper.toUserResponse(user);
     }
 
     public UserResponse getUser(UUID user_id){
-        User user = userRepository.findById(user_id).orElseThrow(()->new RuntimeException("Not found user"));
+        User user = userRepository.findById(user_id).orElseThrow(()->new AppException(EnumCode.USER_NOT_EXIST));
         return userMapper.toUserResponse(user);
     }
 
@@ -46,6 +48,8 @@ public class UserService {
     }
 
     public void deleteUser(UUID user_id){
+        if(!userRepository.existsById(user_id))
+            throw new AppException(EnumCode.USER_NOT_EXIST);
         userRepository.deleteById(user_id);
     }
 }

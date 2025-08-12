@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -24,4 +25,5 @@ public class UserResponse {
     LocalDate dateOfBirth;
     String shippingAddress;
     List<Order> orders;
+    Set<RoleResponse> roles;
 }

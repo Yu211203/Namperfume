@@ -7,6 +7,7 @@ import org.hibernate.validator.cfg.defs.UUIDDef;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -33,4 +34,11 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     List<Order> orders;
+
+    @ManyToMany
+    @JoinTable(name = "user_role",
+    joinColumns = @JoinColumn(name = "user_id"),
+    inverseJoinColumns = @JoinColumn(name = "role_name"))
+    private Set<Role> roles;
 }
+

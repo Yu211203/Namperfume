@@ -45,8 +45,8 @@ public class OrderDetailService {
         try
         {
             orderDetail = orderDetailRepository.save(orderDetail);
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+        } catch (AppException e) {
+            throw new AppException(EnumCode.UNCATEGORIZE_EXCEPTION);
         }
 
         return orderDetailMapper.toOrderDetailResponse(orderDetail);

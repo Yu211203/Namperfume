@@ -4,6 +4,8 @@ import com.ex.namperfume.dto.request.ProductRequest;
 import com.ex.namperfume.dto.request.ProductSizeRequest;
 import com.ex.namperfume.dto.response.ProductResponse;
 import com.ex.namperfume.entity.*;
+import com.ex.namperfume.exception.AppException;
+import com.ex.namperfume.exception.EnumCode;
 import com.ex.namperfume.mapper.BrandMapper;
 import com.ex.namperfume.mapper.ProductMapper;
 import com.ex.namperfume.mapper.ProductSizeMapper;
@@ -94,14 +96,14 @@ public class ProductService {
     public ProductResponse getProductById(UUID product_id){
         log.info("Fetching product with id: {}", product_id);
 
-        Product product = productRepository.findById(product_id).orElseThrow(()-> new RuntimeException("Not found product with id: "+product_id));
+        Product product = productRepository.findById(product_id).orElseThrow(()-> new AppException(EnumCode.PRODUCT_NOT_EXIST));
 
         return productMapper.toProductResponse(product);
     }
 
     @Transactional
     public List<ProductResponse> getProductsByBrand(UUID brand_id){
-        Brand brand = brandRepository.findById(brand_id).orElseThrow(()-> new RuntimeException("Not found brand"));
+        Brand brand = brandRepository.findById(brand_id).orElseThrow(()-> new AppException(EnumCode.BRAND_NOT_EXIST));
 
         List<Product> products = productRepository.findByBrand(brand);
         return products.stream().map(productMapper::toProductResponse).toList();
@@ -109,7 +111,7 @@ public class ProductService {
 
     @Transactional
     public List<ProductResponse> getProductsByType(UUID type_id){
-        ProductType type = typeRepository.findById(type_id).orElseThrow(()-> new RuntimeException("Not found product type with id: "+type_id));
+        ProductType type = typeRepository.findById(type_id).orElseThrow(()-> new AppException(EnumCode.PRODUCT_TYPE_NOT_EXIST));
 
         List<Product> products = productRepository.findByType(type);
 
@@ -137,7 +139,7 @@ public class ProductService {
     //Delete product by id
     @Transactional
     public void deleteProduct(UUID product_id){
-        Product product = productRepository.findById(product_id).orElseThrow(()->new RuntimeException("Not found product with id: "+product_id));
+        Product product = productRepository.findById(product_id).orElseThrow(()->new AppException(EnumCode.PRODUCT_NOT_EXIST));
         for (ProductSize size : product.getProductSizes()){
             size.setProduct(null);
         }
@@ -159,13 +161,13 @@ public class ProductService {
 
             if(request.getBrand_id() != null){
                 Brand brand =brandRepository.findById(request.getBrand_id())
-                        .orElseThrow(()-> new RuntimeException("Not found brand with id: "+ request.getBrand_id()));
+                        .orElseThrow(()-> new AppException(EnumCode.BRAND_NOT_EXIST));
                 product.setBrand(brand);
             }
 
             if(request.getType_id()!= null){
                 ProductType type = typeRepository.findById(request.getType_id())
-                        .orElseThrow(()-> new RuntimeException("Not found product type with id: "+request.getType_id()));
+                        .orElseThrow(()-> new AppException(EnumCode.PRODUCT_TYPE_NOT_EXIST));
                 product.setType(type);
             }
 
@@ -177,7 +179,7 @@ public class ProductService {
 
                             productSize.setProduct_price(sizeRequest.getProduct_price() == null || sizeRequest.getProduct_price() == 0 ? 0L : sizeRequest.getProduct_price());
 
-                            Size size = sizeRepository.findById(sizeRequest.getSize_id()).orElseThrow(()-> new RuntimeException("Not found size with id: "+sizeRequest.getSize_id()));
+                            Size size = sizeRepository.findById(sizeRequest.getSize_id()).orElseThrow(()-> new AppException(EnumCode.SIZE_NOT_EXIST));
 
                             productSize.setSize(size);
                             productSize.setProduct(product);

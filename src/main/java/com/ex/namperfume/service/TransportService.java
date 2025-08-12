@@ -3,6 +3,8 @@ package com.ex.namperfume.service;
 import com.ex.namperfume.dto.request.TransportRequest;
 import com.ex.namperfume.dto.response.TransportResponse;
 import com.ex.namperfume.entity.Transport;
+import com.ex.namperfume.exception.AppException;
+import com.ex.namperfume.exception.EnumCode;
 import com.ex.namperfume.mapper.TransportMapper;
 import com.ex.namperfume.repository.TransportRepository;
 import lombok.AccessLevel;
@@ -27,8 +29,8 @@ public class TransportService {
         Transport transport = transportMapper.toTransport(request);
         try{
             transport = transportRepository.save(transport);
-        }catch (RuntimeException e){
-            throw new RuntimeException("Error");
+        }catch (AppException e){
+            throw new AppException(EnumCode.UNCATEGORIZE_EXCEPTION);
         }
 
         return transportMapper.toTransportResponse(transport);
@@ -39,12 +41,14 @@ public class TransportService {
     }
 
     public TransportResponse getTransport(UUID transport_id){
-        Transport transport = transportRepository.findById(transport_id).orElseThrow(()->new RuntimeException("Not found transport with id: "+ transport_id));
+        Transport transport = transportRepository.findById(transport_id).orElseThrow(()->new AppException(EnumCode.TRANSPORT_NOT_EXIST));
 
         return transportMapper.toTransportResponse(transport);
     }
 
     public void deleteTransport(UUID transport_id){
+        if(!transportRepository.existsById(transport_id))
+            throw new AppException(EnumCode.TRANSPORT_NOT_EXIST);
         transportRepository.deleteById(transport_id);
     }
 }

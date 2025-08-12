@@ -48,8 +48,8 @@ public class OrderService {
 
         try{
             order = orderRepository.save(order);
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+        } catch (AppException e) {
+            throw new AppException(EnumCode.UNCATEGORIZE_EXCEPTION);
         }
 
         return orderMapper.toOrderResponse(order);
@@ -72,7 +72,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse updateOrderStatus(UUID order_id, String newStatus){
-        Order order = orderRepository.findById(order_id).orElseThrow(()-> new RuntimeException("not found order with id: "+order_id));
+        Order order = orderRepository.findById(order_id).orElseThrow(()-> new AppException(EnumCode.ORDER_NOT_EXIST));
         order.setOrder_status(newStatus);
         order = orderRepository.save(order);
 
@@ -82,7 +82,7 @@ public class OrderService {
     @Transactional
     public void deleteOrder(UUID order_id){
         if(!orderRepository.existsById(order_id)){
-            throw new RuntimeException("Not found order with id: "+ order_id);
+            throw new AppException(EnumCode.ORDER_NOT_EXIST);
         }
         orderRepository.deleteById(order_id);
     }

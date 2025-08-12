@@ -38,8 +38,6 @@ public class Order {
 
     String order_status;
 
-    String payment_status;
-
     @Builder.Default
     LocalDateTime created_at = LocalDateTime.now();
 
