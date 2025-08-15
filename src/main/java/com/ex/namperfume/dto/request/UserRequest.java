@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -36,4 +37,6 @@ public class UserRequest {
 
     @NotBlank(message = "Shipping address is required")
     String shippingAddress;
+
+    Set<String> roles;
 }

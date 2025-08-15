@@ -2,5 +2,5 @@ package com.ex.namperfume.enums;
 
 public enum Role {
     ADMIN,
-    CUSTOMER
+    USER
 }

@@ -3,7 +3,6 @@ package com.ex.namperfume.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.validator.cfg.defs.UUIDDef;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,6 +11,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)

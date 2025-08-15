@@ -9,12 +9,13 @@ import java.util.Date;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 public class InvalidatedToken {
     @Id
-    String invalidatedToken_id;
+    String id;
     Date expiryTime;
 }

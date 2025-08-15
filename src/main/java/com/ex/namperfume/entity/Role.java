@@ -22,6 +22,6 @@ public class Role {
     @ManyToMany
     Set<Permission> permissions;
 
-    @ManyToMany(mappedBy = "role")
+    @ManyToMany(mappedBy = "roles")
     Set<User> users;
 }

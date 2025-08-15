@@ -16,7 +16,10 @@ public enum EnumCode {
     PRODUCT_TYPE_NOT_EXIST(1010, "Product type not exist",HttpStatus.NOT_FOUND),
     BRAND_NOT_EXIST(1011, "Brand not exist",HttpStatus.NOT_FOUND),
     SIZE_NOT_EXIST(1012, "Size not found", HttpStatus.NOT_FOUND),
-    UNAUTHENTICATE(1013, "Unauthenticated", HttpStatus.UNAUTHORIZED)
+    UNAUTHENTICATE(1013, "Unauthenticated", HttpStatus.UNAUTHORIZED),
+    ROLE_NOT_EXIST(1014, "Role not found", HttpStatus.NOT_FOUND),
+    TOKEN_INVALID(1015, "Token invalid", HttpStatus.BAD_REQUEST),
+    USER_EXIST(1016, "User existed", HttpStatus.BAD_REQUEST)
     ;
 
     private final int code;
