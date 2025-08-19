@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,8 +45,8 @@ public class OrderController {
     }
 
     @DeleteMapping("/{order_id}")
-    public String deleteOrder(@PathVariable("order_id") UUID order_id){
+    public ResponseEntity<ApiResponse<Void>> deleteOrder(@PathVariable("order_id") UUID order_id){
         orderService.deleteOrder(order_id);
-        return "Order deleted successfully";
+        return ResponseEntity.noContent().build();
     }
 }

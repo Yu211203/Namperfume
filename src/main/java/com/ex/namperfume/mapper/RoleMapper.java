@@ -20,19 +20,19 @@ public interface RoleMapper {
     RoleResponse toRoleResponse (Role role);
 
     @Named("nameToRole")
-    default Role nameToRole(String name){
-        if (name == null) return null;
+    default Role nameToRole(String role_name){
+        if (role_name == null) return null;
         Role r = new Role();
 
-        r.setRole_name(name);
+        r.setRoleName(role_name);
         return r;
     }
 
     @Named("namesToRoles")
-    default Set<Role> namesToRoles(Set<String> names)
+    default Set<Role> namesToRoles(Set<String> role_names)
     {
-        if(names == null) return java.util.Collections.emptySet();
-        return names.stream().map(this::nameToRole).collect(Collectors.toSet());
+        if(role_names == null) return java.util.Collections.emptySet();
+        return role_names.stream().map(this::nameToRole).collect(Collectors.toSet());
 
     }
 }

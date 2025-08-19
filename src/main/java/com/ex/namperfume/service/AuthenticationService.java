@@ -81,7 +81,7 @@ public class AuthenticationService {
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
         if(!authenticated)
-            throw new AppException(EnumCode.UNAUTHENTICATE);
+            throw new AppException(EnumCode.UNAUTHENTICATED);
 
         var token = generateToken(user);
         return AuthenticationResponse.builder()
@@ -119,8 +119,8 @@ public class AuthenticationService {
                     .build();
 
             invalidatedTokenRepository.save(invalidatedToken);
-            var email = signedJWT.getJWTClaimsSet().getSubject();
-            var user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(EnumCode.UNAUTHENTICATE));
+            var user_id = signedJWT.getJWTClaimsSet().getSubject();
+            var user = userRepository.findByEmail(user_id).orElseThrow(() -> new AppException(EnumCode.UNAUTHENTICATED));
             var token = generateToken(user);
 
             return AuthenticationResponse.builder()
@@ -145,19 +145,19 @@ public class AuthenticationService {
         var verified = signedJWT.verify(verifier);
 
         if(!(verified && expiryTime.after(new Date())))
-            throw new AppException(EnumCode.UNAUTHENTICATE);
+            throw new AppException(EnumCode.UNAUTHENTICATED);
         if (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
-            throw new AppException(EnumCode.UNAUTHENTICATE);
+            throw new AppException(EnumCode.UNAUTHENTICATED);
 
         return signedJWT;
 
     }
 
     private String generateToken(User user){
-        JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
+        JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getEmail())
+                .subject(user.getUser_id().toString())
                 .issuer("thuxuyen")
                 .issueTime(new Date())
                 .expirationTime(new Date(Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()))
@@ -183,11 +183,11 @@ public class AuthenticationService {
         StringJoiner stringJoiner = new StringJoiner(" ");
         if(!CollectionUtils.isEmpty(user.getRoles())){
             user.getRoles().forEach(role -> {
-                stringJoiner.add("ROLE_"+role.getRole_name());
+                stringJoiner.add("ROLE_"+role.getRoleName());
                 if(!CollectionUtils.isEmpty(role.getPermissions()))
                 {
                     role.getPermissions().forEach(permission -> {
-                        stringJoiner.add(permission.getPermission_name());
+                        stringJoiner.add(permission.getPermissionName());
                     });
                 }
             });

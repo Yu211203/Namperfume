@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +24,7 @@ import java.util.List;
 public class PermissionController {
     PermissionService permissionService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<PermissionResponse> createPermisison(@RequestBody PermissionRequest request){
         ApiResponse<PermissionResponse> apiResponse = new ApiResponse<>();
@@ -36,9 +39,10 @@ public class PermissionController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{permission_name}")
-    public String deletePermission(@PathVariable("permission_name") String permission_name){
+    public ResponseEntity<ApiResponse<Void>> deletePermission(@PathVariable("permission_name") String permission_name){
         permissionService.deletePermission(permission_name);
-        return "Permission deleted successfully";
+        return ResponseEntity.noContent().build();
     }
 }

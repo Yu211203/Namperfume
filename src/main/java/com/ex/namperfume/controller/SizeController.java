@@ -8,6 +8,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +23,7 @@ import java.util.UUID;
 public class SizeController {
     SizeService sizeService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<SizeResponse> createSize (@RequestBody SizeRequest request){
         ApiResponse<SizeResponse> api = new ApiResponse<>();
@@ -42,9 +45,10 @@ public class SizeController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{size_id}")
-    public String deleteSize(@PathVariable("size_id") UUID size_id){
+    public ResponseEntity<ApiResponse<Void>> deleteSize(@PathVariable("size_id") UUID size_id){
         sizeService.deleteSize(size_id);
-        return "Size delete successfully";
+        return ResponseEntity.noContent().build();
     }
 }

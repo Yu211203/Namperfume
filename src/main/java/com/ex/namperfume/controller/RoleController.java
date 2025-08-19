@@ -8,6 +8,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.List;
 public class RoleController {
     RoleService roleService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<RoleResponse> createRole(@RequestBody RoleRequest request)
     {
@@ -35,9 +38,10 @@ public class RoleController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{role_name}")
-    public String deleteRole(@PathVariable("role_name") String role_name){
+    public ResponseEntity<ApiResponse<Void>> deleteRole(@PathVariable("role_name") String role_name){
         roleService.deleteRole(role_name);
-        return "Role deleted successfully";
+        return ResponseEntity.noContent().build();
     }
 }

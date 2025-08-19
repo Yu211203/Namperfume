@@ -29,7 +29,7 @@ public class SizeService {
         try {
             size = sizeRepository.save(size);
         } catch (AppException e) {
-            throw new AppException(EnumCode.UNCATEGORIZE_EXCEPTION);
+            throw new AppException(EnumCode.UNCATEGORIZED_EXCEPTION);
         }
         return sizeMapper.toSizeResponse(size);
     }

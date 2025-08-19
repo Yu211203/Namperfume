@@ -8,6 +8,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +24,7 @@ public class TransportController {
 
     TransportService transportService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<TransportResponse> createTransport(@RequestBody TransportRequest request){
         ApiResponse<TransportResponse> api = new ApiResponse<>();
@@ -43,10 +46,11 @@ public class TransportController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{transport_id}")
-    public String deleteTransport(@PathVariable("transport_id")UUID transport_id){
+    public ResponseEntity<ApiResponse<Void>> deleteTransport(@PathVariable("transport_id")UUID transport_id){
         transportService.deleteTransport(transport_id);
-        return "Transport deleted successfully";
+        return ResponseEntity.noContent().build();
     }
 
 }

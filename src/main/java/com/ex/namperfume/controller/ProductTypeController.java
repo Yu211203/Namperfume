@@ -8,6 +8,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +24,7 @@ public class ProductTypeController {
 
     ProductTypeService productTypeService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<ProductTypeResponse> createProductType(@RequestBody ProductTypeRequest request){
         ApiResponse<ProductTypeResponse> apiResponse = new ApiResponse<>();
@@ -43,12 +46,14 @@ public class ProductTypeController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{type_id}")
-    public String deleteProductType(@PathVariable("type_id") UUID type_id){
+    public ResponseEntity<ApiResponse<Void>> deleteProductType(@PathVariable("type_id") UUID type_id){
         productTypeService.deleteProductType(type_id);
-        return "Delete product type successfully";
+        return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{type_id}")
     public ApiResponse<ProductTypeResponse> updateTypeName(@PathVariable("type_id") UUID type_id, @RequestBody String newTypeName){
         return ApiResponse.<ProductTypeResponse>builder()

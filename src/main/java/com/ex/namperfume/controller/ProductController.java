@@ -10,6 +10,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +26,7 @@ public class ProductController {
 
     ProductService productService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<ProductResponse> createProduct(@RequestBody ProductRequest request){
         ApiResponse<ProductResponse> api = new ApiResponse<>();
@@ -73,12 +76,14 @@ public class ProductController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{product_id}")
-    public String deleteProduct(@PathVariable("product_id") UUID product_id){
+    public ResponseEntity<ApiResponse<Void>> deleteProduct(@PathVariable("product_id") UUID product_id){
         productService.deleteProduct(product_id);
-        return "Product deleted successfully";
+        return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{product_id}")
     public ApiResponse<ProductResponse> updateProductById(@PathVariable("product_id") UUID product_id,
                                                       @Valid @RequestBody ProductRequest request){
@@ -87,6 +92,7 @@ public class ProductController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{product_id}")
     public ApiResponse<ProductResponse> updateProduct(@PathVariable("product_id")UUID product_id, @Valid @RequestBody ProductRequest request){
         Product existingProduct = productService.findProductById(product_id);

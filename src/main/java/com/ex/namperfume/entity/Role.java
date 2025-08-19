@@ -16,12 +16,21 @@ import java.util.Set;
 @Entity
 public class Role {
     @Id
-    String role_name;
-    String role_description;
+    String roleName;
+    String roleDescription;
 
     @ManyToMany
+            @JoinTable(
+                    name = "role_permissions",
+                    joinColumns = @JoinColumn(name = "role_name"),
+                    inverseJoinColumns = @JoinColumn(name = "permission_name")
+            )
     Set<Permission> permissions;
 
     @ManyToMany(mappedBy = "roles")
     Set<User> users;
+
+    public Role(String role_name){
+        this.roleName = role_name;
+    }
 }

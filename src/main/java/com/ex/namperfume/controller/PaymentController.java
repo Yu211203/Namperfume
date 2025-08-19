@@ -8,6 +8,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,9 +45,10 @@ public class PaymentController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{payment_id}")
-    public String deletePayment(@PathVariable("payment_id")UUID payment_id){
+    public ResponseEntity<ApiResponse<Void>> deletePayment(@PathVariable("payment_id")UUID payment_id){
         paymentService.detelePayment(payment_id);
-        return "Payment method deleted successfully";
+        return ResponseEntity.noContent().build();
     }
 }

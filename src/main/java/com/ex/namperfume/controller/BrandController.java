@@ -7,6 +7,8 @@ import com.ex.namperfume.service.BrandService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.UUID;
 public class BrandController {
     private final BrandService brandService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<BrandResponse> createBrand(@Valid @RequestBody BrandRequest request){
         ApiResponse<BrandResponse> api = new ApiResponse<>();
@@ -40,12 +43,14 @@ public class BrandController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{brand_id}")
-    public String deleteBrand(@PathVariable("brand_id") UUID brand_id){
+    public ResponseEntity<ApiResponse<Void>> deleteBrand(@PathVariable("brand_id") UUID brand_id){
         brandService.deleteBrand(brand_id);
-        return "Brand delete successfully!!";
+        return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{brand_id}")
     public ApiResponse<BrandResponse> updateBrandName(@PathVariable("brand_id")UUID brand_id, @RequestBody String newBrandName){
         return ApiResponse.<BrandResponse>builder()

@@ -29,7 +29,7 @@ public class ProductTypeService {
         try {
             type = repository.save(type);
         } catch (AppException e) {
-            throw new AppException(EnumCode.UNCATEGORIZE_EXCEPTION);
+            throw new AppException(EnumCode.UNCATEGORIZED_EXCEPTION);
         }
 
         return mapper.toProductTypeResponse(type);

@@ -38,7 +38,7 @@ public class ProductSizeService {
         try {
             productSize = repository.save(productSize);
         } catch (AppException e) {
-            throw new AppException(EnumCode.UNCATEGORIZE_EXCEPTION);
+            throw new AppException(EnumCode.UNCATEGORIZED_EXCEPTION);
         }
         return mapper.toProductSizeResponse(productSize);
     }

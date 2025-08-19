@@ -21,12 +21,38 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final String[] PUBLIC_ENDPOINTS={
+    private final String[] PUBLIC_POST_ENDPOINTS={
             "/users",
             "/auth/token",
             "/auth/introspect",
             "/auth/logout",
-            "/auth/refresh"
+            "/auth/refresh",
+            "/orders",
+            "details",
+            "/payments"
+    };
+
+    private static final String[] PUBLIC_GET_ENDPOINTS = {
+            "/products/**",
+            "/brands",
+            "/brands/**",
+            "/orders",
+            "/orders/**",
+            "/details",
+            "/details/**",
+            "/payments",
+            "/payments/**",
+            "/products",
+            "/products/**/**",
+            "/types",
+            "/types/**",
+            "/productSize",
+            "/productSize/**"
+
+    };
+    private static final String[] PUBLIC_DELETE_ENDPOINTS={
+            "/orders/**",
+            "/details/**",
     };
 
     @Autowired
@@ -39,7 +65,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.DELETE, PUBLIC_DELETE_ENDPOINTS).permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
@@ -54,11 +82,14 @@ public class SecurityConfig {
 
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter c = new JwtGrantedAuthoritiesConverter();
-        c.setAuthorityPrefix("");
-        JwtAuthenticationConverter conv = new JwtAuthenticationConverter();
-        conv.setJwtGrantedAuthoritiesConverter(c);
-        return conv;
+        JwtGrantedAuthoritiesConverter converter = new JwtGrantedAuthoritiesConverter();
+        //converter.setAuthorityPrefix("ROLE_");
+        converter.setAuthoritiesClaimName("scope"); // map claim 'scope' thành authorities
+        converter.setAuthorityPrefix("");
+
+        JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
+        jwtConverter.setJwtGrantedAuthoritiesConverter(converter);
+        return jwtConverter;
     }
 
     @Bean

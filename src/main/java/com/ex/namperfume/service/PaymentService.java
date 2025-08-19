@@ -32,7 +32,7 @@ public class PaymentService {
 
         }
         catch (AppException e) {
-            throw new AppException(EnumCode.UNCATEGORIZE_EXCEPTION);
+            throw new AppException(EnumCode.UNCATEGORIZED_EXCEPTION);
         }
 
         return paymentMapper.toPaymentResponse(payment);

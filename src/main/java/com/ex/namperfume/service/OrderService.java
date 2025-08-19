@@ -49,7 +49,7 @@ public class OrderService {
         try{
             order = orderRepository.save(order);
         } catch (AppException e) {
-            throw new AppException(EnumCode.UNCATEGORIZE_EXCEPTION);
+            throw new AppException(EnumCode.UNCATEGORIZED_EXCEPTION);
         }
 
         return orderMapper.toOrderResponse(order);

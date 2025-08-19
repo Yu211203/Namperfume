@@ -30,7 +30,7 @@ public class TransportService {
         try{
             transport = transportRepository.save(transport);
         }catch (AppException e){
-            throw new AppException(EnumCode.UNCATEGORIZE_EXCEPTION);
+            throw new AppException(EnumCode.UNCATEGORIZED_EXCEPTION);
         }
 
         return transportMapper.toTransportResponse(transport);

@@ -45,13 +45,13 @@ public class ApplicationInitConfig {
             if(userRepository.findByEmail(ADMIN_USER_NAME).isEmpty())
             {
                 roleRepository.save(Role.builder()
-                                .role_name(PredefinedRole.USER_ROLE)
-                                .role_description("User role")
+                                .roleName(PredefinedRole.USER_ROLE)
+                                .roleDescription("User role")
                         .build());
 
                 Role adminRole = roleRepository.save(Role.builder()
-                                .role_name(PredefinedRole.ADMIN_ROLE)
-                                .role_description("Admin role")
+                                .roleName(PredefinedRole.ADMIN_ROLE)
+                                .roleDescription("Admin role")
                         .build());
 
                 var roles = new HashSet<Role>();

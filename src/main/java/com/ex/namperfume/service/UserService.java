@@ -46,7 +46,7 @@ public class UserService {
             userRepository.save(user);
 
         } catch (AppException e) {
-            throw new AppException(EnumCode.UNCATEGORIZE_EXCEPTION);
+            throw new AppException(EnumCode.UNCATEGORIZED_EXCEPTION);
         }
         return userMapper.toUserResponse(user);
     }
@@ -78,7 +78,7 @@ public class UserService {
     public UserResponse removeRoleFromUser(UUID user_id, String role_name){
         User user = userRepository.findById(user_id).orElseThrow(()-> new AppException(EnumCode.USER_NOT_EXIST));
 
-        user.getRoles().removeIf(r -> r.getRole_name().equals(role_name));
+        user.getRoles().removeIf(r -> r.getRoleName().equals(role_name));
         userRepository.save(user);
         return userMapper.toUserResponse(user);
     }
