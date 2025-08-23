@@ -1,10 +1,10 @@
 package com.ex.namperfume.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -15,9 +15,11 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class Permission {
     @Id
-    @Column(name = "permission_name")
+    @GeneratedValue(strategy = GenerationType.UUID)
+
+    UUID permission_id;
+
     String permissionName;
 
-    @Column(name = "permission_description")
     String permissionDescription;
 }

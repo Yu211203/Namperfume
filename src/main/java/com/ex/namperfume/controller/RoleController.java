@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,9 +40,9 @@ public class RoleController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{role_name}")
-    public ResponseEntity<ApiResponse<Void>> deleteRole(@PathVariable("role_name") String role_name){
-        roleService.deleteRole(role_name);
+    @DeleteMapping("/{role_id}")
+    public ResponseEntity<ApiResponse<Void>> deleteRole(@PathVariable("role_id")UUID role_id){
+        roleService.deleteRole(role_id);
         return ResponseEntity.noContent().build();
     }
 }

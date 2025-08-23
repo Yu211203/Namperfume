@@ -28,7 +28,7 @@ public class SecurityConfig {
             "/auth/logout",
             "/auth/refresh",
             "/orders",
-            "details",
+            "/details",
             "/payments"
     };
 
@@ -43,7 +43,7 @@ public class SecurityConfig {
             "/payments",
             "/payments/**",
             "/products",
-            "/products/**/**",
+            "/products/**",
             "/types",
             "/types/**",
             "/productSize",

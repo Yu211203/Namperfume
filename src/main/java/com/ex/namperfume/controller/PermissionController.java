@@ -4,6 +4,7 @@ import com.ex.namperfume.dto.request.PermissionRequest;
 import com.ex.namperfume.dto.response.ApiResponse;
 import com.ex.namperfume.dto.response.PermissionResponse;
 import com.ex.namperfume.service.PermissionService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/permissions")
@@ -26,7 +28,7 @@ public class PermissionController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ApiResponse<PermissionResponse> createPermisison(@RequestBody PermissionRequest request){
+    public ApiResponse<PermissionResponse> createPermisison(@Valid @RequestBody PermissionRequest request){
         ApiResponse<PermissionResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(permissionService.createPermission(request));
         return apiResponse;
@@ -40,9 +42,9 @@ public class PermissionController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{permission_name}")
-    public ResponseEntity<ApiResponse<Void>> deletePermission(@PathVariable("permission_name") String permission_name){
-        permissionService.deletePermission(permission_name);
+    @DeleteMapping("/{permission_id}")
+    public ResponseEntity<ApiResponse<Void>> deletePermission(@PathVariable("permission_id") UUID permission_id){
+        permissionService.deletePermission(permission_id);
         return ResponseEntity.noContent().build();
     }
 }

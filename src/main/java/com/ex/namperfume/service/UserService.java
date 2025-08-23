@@ -6,6 +6,7 @@ import com.ex.namperfume.entity.Role;
 import com.ex.namperfume.entity.User;
 import com.ex.namperfume.exception.AppException;
 import com.ex.namperfume.exception.EnumCode;
+import com.ex.namperfume.mapper.RoleMapper;
 import com.ex.namperfume.mapper.UserMapper;
 import com.ex.namperfume.repository.RoleRepository;
 import com.ex.namperfume.repository.UserRepository;
@@ -20,12 +21,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class UserService {
+    private final RoleMapper roleMapper;
     UserRepository userRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
@@ -37,10 +40,10 @@ public class UserService {
 
         try{
             if(request.getRoles() != null && !request.getRoles().isEmpty()){
-                Set<Role> roles = new HashSet<>(roleRepository.findAllById(request.getRoles()));
-                if(roles.size() != request.getRoles().size()){
-                    throw new AppException(EnumCode.ROLE_NOT_EXIST);
-                }
+                Set<Role> roles = request.getRoles().stream().map(roleName -> roleRepository.findByRoleNameIgnoreCase(roleName)
+                        .orElseThrow(()-> new RuntimeException("Role not found: "+roleName)))
+                        .collect(Collectors.toSet());
+
                 user.setRoles(roles);
             }
             userRepository.save(user);
@@ -66,40 +69,62 @@ public class UserService {
         userRepository.deleteById(user_id);
     }
 
-    public UserResponse addRoleToUser(UUID user_id, String role_name){
+    public UserResponse addRoleToUser(UUID user_id, UUID role_id){
         User user = userRepository.findById(user_id)
                 .orElseThrow(()-> new AppException(EnumCode.USER_NOT_EXIST));
-        Role role = roleRepository.findById(role_name).orElseThrow(()-> new AppException(EnumCode.ROLE_NOT_EXIST));
+        Role role = roleRepository.findById(role_id).orElseThrow(()-> new AppException(EnumCode.ROLE_NOT_EXIST));
         user.getRoles().add(role);
         userRepository.save(user);
         return userMapper.toUserResponse(user);
     }
 
-    public UserResponse removeRoleFromUser(UUID user_id, String role_name){
+    public UserResponse removeRoleFromUser(UUID user_id, String roleName){
         User user = userRepository.findById(user_id).orElseThrow(()-> new AppException(EnumCode.USER_NOT_EXIST));
 
-        user.getRoles().removeIf(r -> r.getRoleName().equals(role_name));
+        user.getRoles().removeIf(r -> r.getRoleName().equals(roleName));
         userRepository.save(user);
         return userMapper.toUserResponse(user);
     }
 
-    public UserResponse updateUser(UUID user_id, UserRequest request){
-        User user = userRepository.findById(user_id).orElseThrow(()-> new AppException(EnumCode.USER_NOT_EXIST));
+    public UserResponse updateUser(UUID user_id, UserRequest request) {
+        User user = userRepository.findById(user_id)
+                .orElseThrow(() -> new AppException(EnumCode.USER_NOT_EXIST));
 
         userMapper.updateUser(user, request);
 
-        if(request.getPassword() != null && !request.getPassword().isBlank()){
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
         }
 
-        if(request.getRoles() != null){
-            Set<Role> roles = new HashSet<>(roleRepository.findAllById(request.getRoles()));
-            if(roles.size() != request.getRoles().size()){
-                throw new AppException(EnumCode.ROLE_NOT_EXIST);
-            }
+        if (request.getRoles() != null && !request.getRoles().isEmpty()) {
+            Set<Role> roles = request.getRoles().stream()
+                    .map(roleName -> roleRepository.findByRoleNameIgnoreCase(roleName)
+                            .orElseThrow(() -> new AppException(EnumCode.ROLE_NOT_EXIST)))
+                    .collect(Collectors.toSet());
             user.setRoles(roles);
         }
+
         user = userRepository.save(user);
         return userMapper.toUserResponse(user);
     }
+
+//    public UserResponse updateUser(UUID user_id, UserRequest request){
+//        User user = userRepository.findById(user_id).orElseThrow(()-> new AppException(EnumCode.USER_NOT_EXIST));
+//
+//        userMapper.updateUser(user, request);
+//
+//        if(request.getPassword() != null && !request.getPassword().isBlank()){
+//            user.setPassword(passwordEncoder.encode(request.getPassword()));
+//        }
+//
+//        if(request.getRoles() != null){
+//            Set<Role> roles = new HashSet<>(roleRepository.findAllById(request.getRoles()));
+//            if(roles.size() != request.getRoles().size()){
+//                throw new AppException(EnumCode.ROLE_NOT_EXIST);
+//            }
+//            user.setRoles(roles);
+//        }
+//        user = userRepository.save(user);
+//        return userMapper.toUserResponse(user);
+//    }
 }

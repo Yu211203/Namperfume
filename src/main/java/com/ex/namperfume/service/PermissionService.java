@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,7 +34,7 @@ public class PermissionService {
         return permissionRepository.findAll().stream().map(permissionMapper::toPermissionResponse).collect(Collectors.toList());
     }
 
-    public void deletePermission(String permission_name){
-        permissionRepository.deleteById(permission_name);
+    public void deletePermission(UUID permission_id){
+        permissionRepository.deleteById(permission_id);
     }
 }

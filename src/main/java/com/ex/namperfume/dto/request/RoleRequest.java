@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -13,7 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RoleRequest {
-    String role_name;
-    String role_description;
-    Set<String> permission;
+    String roleName;
+    String roleDescription;
+    Set<UUID> permission;
 }
